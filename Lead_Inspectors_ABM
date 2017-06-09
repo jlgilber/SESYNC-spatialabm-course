@@ -1,0 +1,71 @@
+turtles-own [ money ]
+
+
+
+to setup
+  clear-all
+  setup-turtles
+  setup-patches
+  reset-ticks
+end
+
+to setup-turtles ;; the inspectors, number is the current number in Buffalo
+  create-turtles 62 [ setxy random-xcor random-ycor set color white ] ;; white = health inspectors
+  ask n-of 49 turtles [ set color black ] ;; building inspectors
+  reset-ticks
+end
+
+to setup-patches
+  ask patches [ set pcolor green ]
+  ask n-of 100 patches [ set pcolor red ];; these are the properties to be inspected
+  ask n-of 100 patches [ set pcolor blue] ;; properties known to be safe
+end
+
+to go
+  move-turtles
+  find-lead
+  tick ;; puts in an extra time step to show delay and cost of remediation
+  remediate-lead
+  tick
+end
+
+to move-turtles ;; this makes the inspectors stop at the properties to be inspected
+  ask turtles [
+    ifelse pcolor = red
+    [ stop ]
+    [ left random 360
+      fd 1
+    ]
+  ]
+end
+
+to find-lead ;; turtles looking for properties that might have lead
+  ask turtles [
+    if pcolor = red [
+      set pcolor red - 3 ;; houses being remediated
+      set money money - 10 ;; costs money to remediate
+  ]
+    ifelse show-money?
+    [ set label money ]
+    [set label "" ]
+]
+end
+
+to remediate-lead ;; brings property to lead-free
+  ask turtles [
+     if pcolor = red - 3 [
+      set pcolor blue
+      set money money - 10
+    ]
+  ]
+end
+
+;; how to differentiate between different types of turtles ?
+  ;; want to make landlords, inspectors, tenants and judges
+    ;; have different locations set, the agents move to that locatio
+      ;; tenants move to doctors and then inspectors take action
+      ;; landlords move to court, then take action
+        ;; make the landlords act after court or make inspectors act
+        ;; what agent acts is based on whether the LL cooperates or the
+        ;; property has to go into receivership
+;; create slider that shows how much money is available for remediation
