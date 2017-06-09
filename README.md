@@ -3,3 +3,4 @@
 Objectives for this course
 - Learn NetLogo
 - Eat lots 
+- Learn to git 
